@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://room_template"]
+
+[node name="Room" type="Node2D"]
+
+[node name="BackgroundSprite" type="Sprite2D" parent="."]
+position = "Vector2(0, 0)"
+
+[node name="ItemsContainer" type="Node2D" parent="."]
+
+[node name="FloorCollision" type="StaticBody2D" parent="."]
+# Floor collision for physical items to land on
