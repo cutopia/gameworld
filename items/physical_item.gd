@@ -16,36 +16,23 @@ func _ready():
     set_gravity_scale(gravity_strength / 980.0)
     set_friction(friction)
     set_bounce(bounce)
-    
-    # Add collision shape if not present
-    if get_child_count() == 0:
-        create_collision_shape()
 
 func _process(delta):
-    # Check if item is on a surface
-    if is_on_floor():
-        stack_height_offset = 0.0
-        is_stacked = false
+    # Check if item is on a surface (floor at bottom of screen)
+    if position.y > 500:  # Assuming room height ~500px
+        position.y = 500
+        velocity.y = 0
 
-func place_at(position: Vector2):
-    position = position
-    linear_velocity = Vector2(0, 0)
-    angular_velocity = 0
-
-func create_collision_shape():
-    # Create a simple rectangular collision shape
-    var collision_shape = CollisionShape2D.new()
-    var shape = RectangleShape2D.new()
-    shape.size = Vector2(64, 64)  # Default size
-    collision_shape.shape = shape
-    add_child(collision_shape)
-
-func set_size(width: float, height: float):
-    # Update collision shape size
-    for child in get_children():
-        if child is CollisionShape2D:
-            if child.shape is RectangleShape2D:
-                child.shape.size = Vector2(width, height)
-
-func add_stack_offset(offset: float):
-    stack_height_offset += offset
+func check_collisions():
+    # Simple AABB collision detection
+    var item_rect = Rect2(position - Vector2(32, 32), Vector2(64, 64))
+    
+    for other_item in get_tree().get_nodes_in_group("physical_items"):
+        if other_item != self:
+            var other_rect = Rect2(other_item.position - Vector2(32, 32), Vector2(64, 64))
+            
+            if item_rect.intersects(other_rect):
+                # Push items apart
+                var overlap = 10.0
+                position.x += overlap
+                velocity.y *= -BOUNCE

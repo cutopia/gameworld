@@ -26,35 +26,23 @@ func apply_physics(delta):
     for item in physical_items:
         # Apply gravity
         item.velocity.y += GRAVITY
-        # Move item
         item.position += item.velocity * delta
         
-        # Check for collisions with surfaces and other items
-        check_collisions(item)
-        
-        # Apply friction when on surface
-        if is_on_surface(item):
-            item.velocity.x *= FRICTION
-
-func is_on_surface(item):
-    # Check if item is resting on floor (y position near bottom of room)
-    # or on top of another item
-    return false  # Placeholder - implement collision detection
+        # Check if item is on a surface (floor at bottom of screen)
+        if item.position.y > 500:  # Assuming room height ~500px
+            item.position.y = 500
+            item.velocity.y = 0
 
 func check_collisions(item):
     # Simple AABB collision detection
-    var item_rect = Rect2(item.position - item.size/2, item.size)
+    var item_rect = Rect2(item.position - Vector2(32, 32), Vector2(64, 64))
     
     for other_item in physical_items:
         if item != other_item:
-            var other_rect = Rect2(other_item.position - other_item.size/2, other_item.size)
+            var other_rect = Rect2(other_item.position - Vector2(32, 32), Vector2(64, 64))
             
             if item_rect.intersects(other_rect):
-                handle_collision(item, other_item)
-
-func handle_collision(item1, item2):
-    # Simple collision response
-    # Push items apart and reduce velocity
-    var overlap = 10.0  # pixels to separate
-    item1.position.x += overlap
-    item1.velocity.y *= -BOUNCE
+                # Push items apart
+                var overlap = 10.0
+                item.position.x += overlap
+                item.velocity.y *= -BOUNCE

@@ -10,7 +10,7 @@ var rooms = {}
 func _ready():
     load_all_rooms()
 
-func create_new:", room_id)
+func create_new_id)
         return false
     
     current_room = room_id
